@@ -92,7 +92,7 @@ runServer o = do
         AWS.execute (e^.awsEnv) $
         AWS.listen (e^.awsEnv.sesQueue) (runAppT e . SesNotification.onEvent)
     internalEventListener <- Async.async $
-        Internal.listen e
+        runAppT e Internal.listen
     runSettingsWithShutdown s (pipeline e) 5 `finally` do
         Async.cancel emailListener
         Async.cancel internalEventListener

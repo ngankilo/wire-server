@@ -91,11 +91,10 @@ runTests iConf bConf otherArgs = do
         dynEnd   <- optOrEnv (Opts.dynamoDBEndpoint . Opts.aws) bConf parseEndpoint "AWS_DYNAMODB_ENDPOINT"
         sesEnd   <- optOrEnv (Opts.sesEndpoint . Opts.aws)      bConf parseEndpoint "AWS_SES_ENDPOINT"
         sesQueue <- optOrEnv (Opts.sesQueue . Opts.aws)         bConf pack          "AWS_USER_SES_QUEUE"
-        sqsIntQ  <- optOrEnv (Opts.internalQueue . Opts.aws)    bConf pack          "AWS_USER_INTERNAL_QUEUE"
         sqsJrnlQ <- join <$> optOrEnvSafe (Opts.userJournalQueue . Opts.aws) bConf (Just . pack) "AWS_USER_JOURNAL_QUEUE"
         dynBlTbl <- optOrEnv (Opts.blacklistTable . Opts.aws)   bConf pack          "AWS_USER_BLACKLIST_TABLE"
         dynPkTbl <- optOrEnv (Opts.prekeyTable . Opts.aws)      bConf pack          "AWS_USER_PREKEYS_TABLE"
-        return $ Opts.AWSOpts sesQueue sqsIntQ sqsJrnlQ dynBlTbl dynPkTbl sesEnd sqsEnd dynEnd
+        return $ Opts.AWSOpts sesQueue sqsJrnlQ dynBlTbl dynPkTbl sesEnd sqsEnd dynEnd
 
     parseEndpoint :: String -> AWSEndpoint
     parseEndpoint e = fromMaybe (error ("Not a valid AWS endpoint: " ++ show e))
